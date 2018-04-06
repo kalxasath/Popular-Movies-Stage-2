@@ -25,6 +25,6 @@ You’ll add more information to your movie details view:
 - You’ll modify the existing sorting criteria for the main view to include an additional pivot to show their favorites collection.
 
 
-## Mar ??, 2018 - Initial Commit
+## April 07, 2018 - Initial Commit
 
 > Written with [StackEdit](https://stackedit.io/).
