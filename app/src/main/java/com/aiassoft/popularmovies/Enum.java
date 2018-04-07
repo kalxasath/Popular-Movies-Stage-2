@@ -18,8 +18,6 @@
 
 package com.aiassoft.popularmovies;
 
-import com.aiassoft.popularmovies.data.PopularMoviesContract;
-
 /*
  * Defining a class of enums to use them from any where
  *
@@ -27,7 +25,8 @@ import com.aiassoft.popularmovies.data.PopularMoviesContract;
 public class Enum {
 
     /**
-     *
+     * The access type, to determine who to read the data
+     * over the internet or from local db
      */
     public enum sortByAccessType {
         BY_THE_MOVIE_DB,
