@@ -36,7 +36,9 @@ public class PopularMoviesContract {
      * Inner class that defines the FavoriteMovies table contents
      */
     public static class FavoriteMoviesEntry implements BaseColumns {
-        // This final content URI will include the scheme, the authority, and our tasks path.
+        /** This final content URI will include the scheme, the authority,
+         *  and our FAVORITE_MOVIES path.
+         */
         public static final Uri CONTENT_URI = Const.BASE_CONTENT_URI.buildUpon()
                 .appendPath(Const.PATH_FAVORITE_MOVIES).build();
 
