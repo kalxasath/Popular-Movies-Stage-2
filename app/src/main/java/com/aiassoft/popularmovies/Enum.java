@@ -25,7 +25,7 @@ package com.aiassoft.popularmovies;
 public class Enum {
 
     /**
-     * The access type, to determine who to read the data
+     * The access type, to determine how to read the data
      * over the internet or from local db
      */
     public enum sortByAccessType {
@@ -60,6 +60,11 @@ public class Enum {
             }
         }
 
+        /**
+         * Get the right access type based on the selected Sort By type
+         *
+         * @return the access type, to determine how to read the data
+         */
         public sortByAccessType getAccessType() {
             switch (this) {
                 case MOST_POPULAR:
