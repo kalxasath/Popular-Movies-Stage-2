@@ -111,13 +111,13 @@ public class DetailActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_detail);
 
-        /* should be called from another activity, if not show error toast and return */
+        /** should be called from another activity. if not, show error toast and return */
         Intent intent = getIntent();
         if (intent == null) {
             closeOnError();
         }
 
-        /** Intent parameter should be a valid movie id, if not show error toast and return */
+        /** Intent parameter should be a valid movie id. if not, show error toast and return */
         mMovieId = intent.getIntExtra(EXTRA_MOVIE_ID, DEFAULT_MOVIE_ID);
         if (mMovieId == DEFAULT_MOVIE_ID) {
             // EXTRA_MOVIE_ID not found in intent's parameter

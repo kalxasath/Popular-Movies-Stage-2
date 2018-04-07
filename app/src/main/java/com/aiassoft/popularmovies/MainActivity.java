@@ -196,7 +196,6 @@ public class MainActivity extends AppCompatActivity implements
     private void fetchMoviesList() {
         /* Create a bundle to pass the web url to the loader */
         Bundle loaderArgs = new Bundle();
-        //loaderArgs.putString(LOADER_EXTRA, NetworkUtils.buildMoviesListUrl().toString());
         loaderArgs.putString(LOADER_EXTRA, MyApp.moviesListSortBy.getAccessType().toString());
 
         /*
@@ -264,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public List<MoviesListItem> loadInBackground() {
 
-                // Get the WEB URL that is passed on loader initialization */
+                // Get the access type argument that is passed on loader initialization */
                 String accessType = loaderArgs.getString(LOADER_EXTRA);
                 if (accessType == null || TextUtils.isEmpty(accessType)) {
                     /* If null or empty string is passed, return immediately */
