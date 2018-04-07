@@ -37,7 +37,7 @@ public class PopularMoviesContentProvider extends ContentProvider {
     private PopularMoviesDBHelper mDBHelper;
 
     /**
-     * Define final integer constants for the directory of tasks and a single item.
+     * Define final integer constants for the directory of FAVORITE_MOVIES and a single item.
      * It's convention to use 100, 200, 300, etc for directories,
      * and related ints (101, 102, ..) for items in that directory.
      */
@@ -88,9 +88,9 @@ public class PopularMoviesContentProvider extends ContentProvider {
         final SQLiteDatabase db = mDBHelper.getWritableDatabase();
 
         /**
-         * Write URI matching code to identify the match for the tasks directory
-         * This match will be either 100 for all tasks
-         * or 101 for a task with ID, or an unrecognized URI
+         * Write URI matching code to identify the match for the FAVORITE_MOVIES directory
+         * This match will be either 100 for all FAVORITE_MOVIES
+         * or 101 for a movie with ID, or an unrecognized URI
          */
         int match = sUriMatcher.match(uri);
 
@@ -169,7 +169,7 @@ public class PopularMoviesContentProvider extends ContentProvider {
             case FAVORITE_MOVIES:
                 /**
                  * This starting code will look pretty similar for all of our CRUD functions.
-                 * The query for our tasks case, will return all the rows in our database
+                 * The query for our FAVORITE_MOVIES case, will return all the rows in our database
                  * as a cursor.
                  */
                 retCursor = db.query(FavoriteMoviesEntry.TABLE_NAME,
@@ -179,7 +179,7 @@ public class PopularMoviesContentProvider extends ContentProvider {
             /** Query for one movie in the FAVORITE_MOVIES directory */
             case FAVORITE_MOVIE_WITH_ID:
                 /**
-                 * To Delete a row of data by its ID, we'll use the selection and
+                 * To Query a row of data by its ID, we'll use the selection and
                  * selection args parameters of the delete method.
                  * First we'll have to get the row ID from the past URI.
                  * The URI will look similar to the FAVORITE_MOVIES directory URI.
@@ -231,7 +231,7 @@ public class PopularMoviesContentProvider extends ContentProvider {
         int match = sUriMatcher.match(uri);
 
         /**
-         * returns the deleted records
+         * returns the number of deleted records
          * starts as 0
          */
         int deletedRecord = 0;
@@ -239,7 +239,7 @@ public class PopularMoviesContentProvider extends ContentProvider {
         switch (match) {
             case FAVORITE_MOVIE_WITH_ID:
                 /**
-                 * build the deletion selections/args as in the query statement
+                 * build the deletion selections/args as in the delete statement
                   */
                 String id = uri.getPathSegments().get(1);
                 String mSelection = FavoriteMoviesEntry.COLUMN_NAME_THEMOVIEDB_ID + "=?";
