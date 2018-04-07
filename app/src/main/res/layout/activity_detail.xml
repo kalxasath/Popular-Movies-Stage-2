@@ -106,7 +106,7 @@
                         android:layout_height="wrap_content"
                         android:onClick="onFavoritesButtonClick"
                         android:text="@string/add_to_favorites"
-                        android:visibility="visible" />
+                        android:visibility="invisible" />
                 </LinearLayout>
             </LinearLayout>
 
