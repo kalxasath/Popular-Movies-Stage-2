@@ -18,16 +18,13 @@
 
 package com.aiassoft.popularmovies.utilities;
 
-import android.app.Application;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.util.Log;
 
-import com.aiassoft.popularmovies.Constant;
+import com.aiassoft.popularmovies.Const;
 import com.aiassoft.popularmovies.MyApp;
 
 import java.io.IOException;
@@ -43,33 +40,6 @@ import java.util.Scanner;
 public class NetworkUtils {
     private static final String LOG_TAG = MyApp.APP_TAG + NetworkUtils.class.getSimpleName();
 
-    /* Holds the selected Sort By type for the Movies List */
-    public static theMovieDbSortBy moviesListSortBy = theMovieDbSortBy.MOST_POPULAR;
-
-    /**
-     * The Sort By Enums,
-     * with the method getUrl to get the right web url based on the selected Sort By type
-     */
-    public enum theMovieDbSortBy {
-        MOST_POPULAR,
-        HIGHEST_RATED;
-
-        /**
-         * Get the right web url based on the selected Sort By type
-         *
-         * @return The web url based on the selected Sort By type
-         */
-        String getUrl() {
-            switch (this) {
-                case MOST_POPULAR:
-                    return Constant.THEMOVIEDB_BASE_URL + Constant.THEMOVIEDB_POPULAR_MOVIES;
-                case HIGHEST_RATED:
-                    return Constant.THEMOVIEDB_BASE_URL + Constant.THEMOVIEDB_TOP_RATED_MOVIES;
-                default:
-                    throw new AssertionError("Unknown Sort By " + this);
-            }
-        }
-    }
 
     /**
      * Builds the Movie Poster URL
@@ -78,8 +48,8 @@ public class NetworkUtils {
      * @return           The URL to download the Movie Poster
      */
     public static String buildPosterUrl(String posterPath) {
-        String url = Constant.THEMOVIEDB_POSTER_IMAGE_BASE_URL
-                + Constant.THEMOVIEDB_POSTER_IMAGE_THUMBNAIL_SIZE
+        String url = Const.THEMOVIEDB_POSTER_IMAGE_BASE_URL
+                + Const.THEMOVIEDB_POSTER_IMAGE_THUMBNAIL_SIZE
                 + posterPath;
         Log.d(LOG_TAG, "buildPosterUrl= " + url);
         return url;
@@ -92,13 +62,13 @@ public class NetworkUtils {
      * @return        The URL to get the Movie's data
      */
     public static URL buildAddonsUrl(int movieId, String addonUrl) {
-        Uri builtUri = Uri.parse(Constant.THEMOVIEDB_BASE_URL
-                + Constant.THEMOVIEDB_MOVIE
+        Uri builtUri = Uri.parse(Const.THEMOVIEDB_BASE_URL
+                + Const.THEMOVIEDB_MOVIE
                 + "/" + Integer.toString(movieId)
                 + addonUrl
                 ).buildUpon()
-                .appendQueryParameter(Constant.THEMOVIEDB_PARAM_API_KEY,
-                        Constant.THEMOVIEDB_API_KEY)
+                .appendQueryParameter(Const.THEMOVIEDB_PARAM_API_KEY,
+                        Const.THEMOVIEDB_API_KEY)
                 .build();
 
         URL url = null;
@@ -120,12 +90,12 @@ public class NetworkUtils {
      * @return        The URL to get the Movie's data
      */
     public static URL buildMovieUrl(int movieId) {
-        Uri builtUri = Uri.parse(Constant.THEMOVIEDB_BASE_URL
-                + Constant.THEMOVIEDB_MOVIE
+        Uri builtUri = Uri.parse(Const.THEMOVIEDB_BASE_URL
+                + Const.THEMOVIEDB_MOVIE
                 + "/" + Integer.toString(movieId)
                 ).buildUpon()
-                .appendQueryParameter(Constant.THEMOVIEDB_PARAM_API_KEY,
-                        Constant.THEMOVIEDB_API_KEY)
+                .appendQueryParameter(Const.THEMOVIEDB_PARAM_API_KEY,
+                        Const.THEMOVIEDB_API_KEY)
                 .build();
 
         URL url = null;
@@ -146,10 +116,10 @@ public class NetworkUtils {
      * @return The URL to get the Movies List from the themoviedb.org
      */
     public static URL buildMoviesListUrl() {
-        Uri builtUri = Uri.parse(moviesListSortBy.getUrl()
+        Uri builtUri = Uri.parse(MyApp.moviesListSortBy.getUrl()
                 ).buildUpon()
-                .appendQueryParameter(Constant.THEMOVIEDB_PARAM_API_KEY,
-                        Constant.THEMOVIEDB_API_KEY)
+                .appendQueryParameter(Const.THEMOVIEDB_PARAM_API_KEY,
+                        Const.THEMOVIEDB_API_KEY)
                 .build();
 
         URL url = null;

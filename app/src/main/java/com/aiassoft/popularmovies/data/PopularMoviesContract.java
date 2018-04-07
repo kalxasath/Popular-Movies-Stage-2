@@ -21,9 +21,7 @@ package com.aiassoft.popularmovies.data;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import com.aiassoft.popularmovies.Constant;
-
-import java.net.URI;
+import com.aiassoft.popularmovies.Const;
 
 public class PopularMoviesContract {
 
@@ -39,8 +37,8 @@ public class PopularMoviesContract {
      */
     public static class FavoriteMoviesEntry implements BaseColumns {
         // This final content URI will include the scheme, the authority, and our tasks path.
-        public static final Uri CONTENT_URI = Constant.BASE_CONTENT_URI.buildUpon()
-                .appendPath(Constant.PATH_FAVORITE_MOVIES).build();
+        public static final Uri CONTENT_URI = Const.BASE_CONTENT_URI.buildUpon()
+                .appendPath(Const.PATH_FAVORITE_MOVIES).build();
 
         public static final String TABLE_NAME = "favoriteMovies";
 

@@ -37,11 +37,17 @@ public class MyApp extends Application {
     public static String mMaxRating;
 
     /**
+     *  Holds the selected Sort By type for the Movies List
+     */
+    public static Enum.theMovieDbSortBy moviesListSortBy;
+
+    /**
      * Initialize the static resources
      */
     public static void initResources() {
         mMinutes = getContext().getResources().getString(R.string.minutes);
         mMaxRating = getContext().getResources().getString(R.string.max_rating);
+        moviesListSortBy = Enum.theMovieDbSortBy.MOST_POPULAR;
     }
 
     /**

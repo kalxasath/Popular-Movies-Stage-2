@@ -33,7 +33,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         // Begin of injecting the sensitive data
-        // Add the sensitive data as Constant Fields to the BuildConfig class
+        // Add the sensitive data as Const Fields to the BuildConfig class
         buildConfigField "String", "THEMOVIEDB_API_KEY", theMovieDbApiKey
         // Add the sensitive data as String Resources
         resValue "string", "THEMOVIEDB_API_KEY", theMovieDbApiKey

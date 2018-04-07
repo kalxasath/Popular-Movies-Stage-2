@@ -106,15 +106,7 @@
                         android:layout_height="wrap_content"
                         android:onClick="onFavoritesButtonClick"
                         android:text="@string/add_to_favorites"
-                        android:visibility="invisible" />
-
-                    <Button
-                        android:id="@+id/btn_query"
-                        android:text="query"
-                        android:onClick="onQueryButtonClick"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        />
+                        android:visibility="visible" />
                 </LinearLayout>
             </LinearLayout>
 

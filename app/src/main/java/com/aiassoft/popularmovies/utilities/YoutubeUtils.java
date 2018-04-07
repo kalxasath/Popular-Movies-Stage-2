@@ -18,26 +18,14 @@
 
 package com.aiassoft.popularmovies.utilities;
 
-import android.app.Application;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.aiassoft.popularmovies.Constant;
+import com.aiassoft.popularmovies.Const;
 import com.aiassoft.popularmovies.MyApp;
 import com.aiassoft.popularmovies.R;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Scanner;
 
 /**
  * These utilities will be used to play youtube videos.
@@ -53,9 +41,9 @@ public class YoutubeUtils {
      * @return    The URI to watch the video
      */
     public static Uri buildHttpYoutubeWatchVideoUri(String key) {
-        Uri builtUri = Uri.parse(Constant.YOUTUBE_WATCH_URL
+        Uri builtUri = Uri.parse(Const.YOUTUBE_WATCH_URL
         ).buildUpon()
-                .appendQueryParameter(Constant.YOUTUBE_PARAM_WATCH_VIDEO, key)
+                .appendQueryParameter(Const.YOUTUBE_PARAM_WATCH_VIDEO, key)
                 .build();
         return builtUri;
     }
@@ -68,7 +56,7 @@ public class YoutubeUtils {
      * @return    The URI to watch the video
      */
     public static Uri buildAppYoutubeWatchVideoUri(String key) {
-        Uri builtUri = Uri.parse(Constant.YOUTUBE_APP_URI + key).buildUpon().build();
+        Uri builtUri = Uri.parse(Const.YOUTUBE_APP_URI + key).buildUpon().build();
 
         return builtUri;
     }

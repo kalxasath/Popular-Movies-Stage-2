@@ -27,7 +27,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import com.aiassoft.popularmovies.Constant;
+import com.aiassoft.popularmovies.Const;
 import com.aiassoft.popularmovies.R;
 
 import static com.aiassoft.popularmovies.data.PopularMoviesContract.*;
@@ -61,9 +61,9 @@ public class PopularMoviesContentProvider extends ContentProvider {
          * Using the method addURI(String authority, String path, int code)
          * directory
          */
-        uriMatcher.addURI(Constant.AUTHORITY, Constant.PATH_FAVORITE_MOVIES, FAVORITE_MOVIES);
+        uriMatcher.addURI(Const.AUTHORITY, Const.PATH_FAVORITE_MOVIES, FAVORITE_MOVIES);
         /** single item */
-        uriMatcher.addURI(Constant.AUTHORITY, Constant.PATH_FAVORITE_MOVIES + "/#",
+        uriMatcher.addURI(Const.AUTHORITY, Const.PATH_FAVORITE_MOVIES + "/#",
                 FAVORITE_MOVIE_WITH_ID);
 
         return uriMatcher;
@@ -176,13 +176,40 @@ public class PopularMoviesContentProvider extends ContentProvider {
                         projection, selection, selectionArgs, null, null, sortOrder);
                 break;
 
+            /** Query for one movie in the FAVORITE_MOVIES directory */
             case FAVORITE_MOVIE_WITH_ID:
+                /**
+                 * To Delete a row of data by its ID, we'll use the selection and
+                 * selection args parameters of the delete method.
+                 * First we'll have to get the row ID from the past URI.
+                 * The URI will look similar to the FAVORITE_MOVIES directory URI.
+                 * It'll start with the same scheme authority and FAVORITE_MOVIES path.
+                 * But this time also with an ID as the part of the path.
+                 * And we can grab this ID by Using a call to get path segments on that URI.
+                 * And get with the index 1 passed in.
+                 * Index 0 would be the tasks portion of the path.
+                 * And index 1 is the segment right next to that.
+                 *
+                 * Get the id from the URI
+                 */
                 String id = uri.getPathSegments().get(1);
 
+                /**
+                 * Selection is the theMovieDBId column = ?,
+                 * and the Selection args = the row ID from the URI
+                 * The question mark indicates that this is asking for
+                 */
                 String mSelection = FavoriteMoviesEntry.COLUMN_NAME_THEMOVIEDB_ID + "=?";
 
+                /**
+                 * the rest of this equality from the selection args parameter.
+                 * And the selection args should be the row ID
+                 * which we just got from the past URI.
+                 * And selection args has to be an array of strings.
+                 */
                 String[] mSelectionArgs = new String[]{id};
 
+                /** finally the query is constructed as normally, passing in the selection/args */
                 retCursor = db.query(FavoriteMoviesEntry.TABLE_NAME,
                         projection, mSelection, mSelectionArgs, null, null, sortOrder);
                 break;
@@ -192,19 +219,53 @@ public class PopularMoviesContentProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
+        /** Return the desired Cursor */
         return retCursor;
     }
 
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
 
-        throw new UnsupportedOperationException("Not yet implemented");
+        final SQLiteDatabase db = mDBHelper.getWritableDatabase();
+
+        int match = sUriMatcher.match(uri);
+
+        /**
+         * returns the deleted records
+         * starts as 0
+         */
+        int deletedRecord = 0;
+
+        switch (match) {
+            case FAVORITE_MOVIE_WITH_ID:
+                /**
+                 * build the deletion selections/args as in the query statement
+                  */
+                String id = uri.getPathSegments().get(1);
+                String mSelection = FavoriteMoviesEntry.COLUMN_NAME_THEMOVIEDB_ID + "=?";
+                String[] mSelectionArgs = new String[]{id};
+
+                /** finally the deletion is constructed as normally, passing in the selection/args */
+                deletedRecord =  db.delete(FavoriteMoviesEntry.TABLE_NAME
+                        , mSelection, mSelectionArgs);
+
+                break;
+
+            /** default exception */
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        return deletedRecord;
     }
 
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
 
+        /**
+         * We don't need to update some data, so we don't implemented it yet
+         */
         throw new UnsupportedOperationException("Not yet implemented");
     }
 

@@ -32,10 +32,13 @@
 
     <string name="mnu_sort_by_most_popular">Most Popular</string>
     <string name="mnu_sort_by_highest_rated">Highest Rated</string>
+    <string name="mnu_display_favorite_movies">Favorite Movies</string>
 
     <string name="title_most_popular">Popular Movies</string>
     <string name="title_highest_rated">Highest Rated Movies</string>
+    <string name="title_favorite_movies">Favorite Movies</string>
     <string name="title_movie_detail">MovieDetail</string>
+
     <string name="minutes">min</string>
     <string name="max_rating">/10</string>
     <string name="add_to_favorites">Add to favorites</string>
@@ -44,6 +47,9 @@
     <string name="title_trailers">Trailers</string>
     <string name="title_reviews">Reviews</string>
 
-    <string name="unknown_uri">Unknown uri: </string>
-    <string name="failed_to_insert_row_into">Failed to insert row into </string>
+    <string name="unknown_uri">Unknown uri:</string>
+    <string name="unknown_sort_by">Unknown Sort By:</string>
+    <string name="unknown_access_type">Unknown Access Type:</string>
+    <string name="failed_to_insert_row_into">Failed to insert row into:</string>
+    <string name="doesnt_returns_a_url">, doesn\'t returns a Url</string>
 </resources>

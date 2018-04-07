@@ -11,4 +11,9 @@
         android:orderInCategory="2"
         app:showAsAction="never"
         android:id="@+id/action_sort_by_highest_rated" />
+    <item
+        android:title="@string/mnu_display_favorite_movies"
+        android:orderInCategory="3"
+        app:showAsAction="never"
+        android:id="@+id/action_display_favorite_movies" />
 </menu>

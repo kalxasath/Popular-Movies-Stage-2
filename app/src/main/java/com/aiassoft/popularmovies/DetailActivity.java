@@ -212,8 +212,8 @@ public class DetailActivity extends AppCompatActivity
 
     private void fetchMoviesDetails() {
         new TheMovieDbQueryTask().execute(NetworkUtils.buildMovieUrl(mMovieId),
-                NetworkUtils.buildAddonsUrl(mMovieId, Constant.THEMOVIEDB_VIDEOS),
-                NetworkUtils.buildAddonsUrl(mMovieId, Constant.THEMOVIEDB_REVIEWS));
+                NetworkUtils.buildAddonsUrl(mMovieId, Const.THEMOVIEDB_VIDEOS),
+                NetworkUtils.buildAddonsUrl(mMovieId, Const.THEMOVIEDB_REVIEWS));
     }
 
     @Override
@@ -288,15 +288,22 @@ public class DetailActivity extends AppCompatActivity
         } // doInBackground
 
         private String movieIsFavorite() {
+            /**
+             * We need to access the movie by the member variable mMovieId,
+             * since the mMovie class is not initialized yet
+             */
             String stringId = "" + mMovieId;
             Uri uri = FavoriteMoviesEntry.CONTENT_URI;
             uri = uri.buildUpon().appendPath(stringId).build();
-            Cursor retCursor = getContentResolver().query(uri, null, null, null, null);
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
 
-            if (retCursor == null) {
+            if (cursor == null) {
                 return "0";
             } else {
-                return (retCursor.getCount() == 0 ? "0" : "1");
+                String retStatus = cursor.getCount() == 0 ? "0" : "1";
+                cursor.close();
+
+                return (retStatus);
             }
         }
 
@@ -378,7 +385,39 @@ public class DetailActivity extends AppCompatActivity
         }
     } // onRefreshButtonClick
 
+    /**
+     * This method is for responding to clicks from our Videos list.
+     *
+     * @param movieArrayItem the array item from the selected video
+     */
+    @Override
+    public void onVideoClick(int movieArrayItem) {
+        Toast.makeText(this, mMovieVideosListItems.get(movieArrayItem).getVideoTitle(), Toast.LENGTH_SHORT).show();
+        YoutubeUtils.watchYoutubeVideo(this, mMovieVideosListItems.get(movieArrayItem).getKey());
+    }
 
+    /**
+     * SECTION to handle movie's favorite actions & methods
+     */
+
+    /**
+     * This method is for responding to clicks from the Favorites Button
+     *
+     * @param view The view which reacted to the click
+     */
+    public void onFavoritesButtonClick(View view) {
+        if (mMovie.getIsFavorite()) {
+            removeFromFavorite();
+        } else {
+            addToFavorite();
+        }
+    }
+
+
+    /**
+     * This method insert the desired movie's data in the FAVORITE_MOVIES directory
+     * after that the movie is marked as favorite
+     */
     private void addToFavorite() {
         /** We'll create a new ContentValues object to place data into. */
         ContentValues contentValues = new ContentValues();
@@ -398,50 +437,31 @@ public class DetailActivity extends AppCompatActivity
 
         if (uri != null) {
             mFavoriteButton.setText(R.string.remove_from_favorites);
+            mMovie.setIsFavorite(true);
         } else {
             Toast.makeText(getBaseContext(), "Couldn't insert Favorite", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void removeFromFavorite() {
-
-    }
-
-
     /**
-     * This method is for responding to clicks from the Favorites Button
-     *
-     * @param view The view which reacted to the click
+     * To un-favorite a movie, we have just to delete the movie's data from the
+     * FAVORITE_MOVIES directory, and un-mark it as favorite
      */
-    public void onFavoritesButtonClick(View view) {
-        if (mMovie.getIsFavorite()) {
-            removeFromFavorite();
-        } else {
-            addToFavorite();
-        }
-    }
-
-    public void onQueryButtonClick(View view) {
+    private void removeFromFavorite() {
+        /**
+         * We will remove a movie from our favorite list by removing it from the
+         * FAVORITE_MOVIES directory, so we have to pass in the content providers path
+         * the theMovieDBId
+         */
         String stringId = "" + mMovie.getId();
         Uri uri = FavoriteMoviesEntry.CONTENT_URI;
         uri = uri.buildUpon().appendPath(stringId).build();
-        //uri = uri.buildUpon().build();
-        Cursor retCursor = getContentResolver().query(uri, null, null, null, null);
+        int deletedRecords = getContentResolver().delete(uri,null, null);
 
-        if (retCursor != null)
-            retCursor.moveToFirst();
+        if (deletedRecords > 0) {
+            mFavoriteButton.setText(R.string.add_to_favorites);
+            mMovie.setIsFavorite(false);
+        }
     }
-
-    /**
-     * This method is for responding to clicks from our Videos list.
-     *
-     * @param movieArrayItem the array item from the selected video
-     */
-    @Override
-    public void onVideoClick(int movieArrayItem) {
-        Toast.makeText(this, mMovieVideosListItems.get(movieArrayItem).getVideoTitle(), Toast.LENGTH_SHORT).show();
-        YoutubeUtils.watchYoutubeVideo(this, mMovieVideosListItems.get(movieArrayItem).getKey());
-    }
-
 
 }

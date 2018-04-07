@@ -24,18 +24,19 @@ import android.net.Uri;
  * Defining a class of constants to use them from any where
  *
  */
-public class Constant {
+public class Const {
     /**
-     * We never need to create an instance of the Constant class
-     * because the Constant is simply a class filled,
+     * We never need to create an instance of the Const class
+     * because the Const is simply a class filled,
      * with App related constants that are all static.
      */
-    private Constant() {}
+    private Const() {}
 
     /**
      * themoviedb.org API KEY
      */
     public static final String THEMOVIEDB_API_KEY = BuildConfig.THEMOVIEDB_API_KEY;
+
     /**
      * themoviedb.org URI definitions
      */
@@ -48,7 +49,6 @@ public class Constant {
     public static final String THEMOVIEDB_POSTER_IMAGE_BASE_URL = "http://image.tmdb.org/t/p";
     public static final String THEMOVIEDB_POSTER_IMAGE_THUMBNAIL_SIZE = "/w185";
     public static final String THEMOVIEDB_PARAM_API_KEY = "api_key";
-
 
     /**
      * youtube definitions

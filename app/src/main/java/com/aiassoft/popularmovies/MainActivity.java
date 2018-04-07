@@ -23,7 +23,8 @@
 package com.aiassoft.popularmovies;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -40,12 +41,16 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.aiassoft.popularmovies.data.PopularMoviesContract;
 import com.aiassoft.popularmovies.model.MoviesListItem;
 import com.aiassoft.popularmovies.utilities.JsonUtils;
 import com.aiassoft.popularmovies.utilities.NetworkUtils;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.aiassoft.popularmovies.MyApp.moviesListSortBy;
 
 public class MainActivity extends AppCompatActivity implements
         MoviesListAdapter.MoviesAdapterOnClickHandler,
@@ -57,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements
      * Used to identify the WEB URL that is being used in the loader.loadInBackground
      * to get the movies' data from themoviedb.org
      */
-    private static final String LOADER_WEB_URL_EXTRA = "web_url";
+    private static final String LOADER_EXTRA = "web_url";
 
     /* The Movies List Adapter */
     private MoviesListAdapter mMoviesListAdapter;
@@ -146,26 +151,38 @@ public class MainActivity extends AppCompatActivity implements
 
         switch (selectedMenuItem) {
             case R.id.action_sort_by_most_popular :
-                /* Display the list by most popular movies */
+                /** Display the list by most popular movies */
                 invalidateData();
                 setTitle(getString(R.string.title_most_popular));
 
-                /* Save the selected Sort By method, will be used to fetch the appropriate
+                /** Save the selected Sort By method, will be used to fetch the appropriate
                  * list of movies
                  */
-                NetworkUtils.moviesListSortBy = NetworkUtils.theMovieDbSortBy.MOST_POPULAR;
+                moviesListSortBy = Enum.theMovieDbSortBy.MOST_POPULAR;
                 fetchMoviesList();
                 return true;
 
             case R.id.action_sort_by_highest_rated :
-                /* Display the list by highest rated movies */
+                /** Display the list by highest rated movies */
                 invalidateData();
                 setTitle(getString(R.string.title_highest_rated));
 
-                /* Save the selected Sort By method, will be used to fetch the appropriate
+                /** Save the selected Sort By method, will be used to fetch the appropriate
                  * list of movies
                  */
-                NetworkUtils.moviesListSortBy = NetworkUtils.theMovieDbSortBy.HIGHEST_RATED;
+                moviesListSortBy = Enum.theMovieDbSortBy.HIGHEST_RATED;
+                fetchMoviesList();
+                return true;
+
+            case R.id.action_display_favorite_movies :
+                /** Display the favorite movies list */
+                invalidateData();
+                setTitle(getString(R.string.title_favorite_movies));
+
+                /** Save the selected Sort By method, will be used to fetch the appropriate
+                 * list of movies
+                 */
+                moviesListSortBy = Enum.theMovieDbSortBy.FAVORITE;
                 fetchMoviesList();
                 return true;
         }
@@ -178,9 +195,9 @@ public class MainActivity extends AppCompatActivity implements
      */
     private void fetchMoviesList() {
         /* Create a bundle to pass the web url to the loader */
-        Bundle webUrlBundle = new Bundle();
-        webUrlBundle.putString(LOADER_WEB_URL_EXTRA,
-                NetworkUtils.buildMoviesListUrl().toString());
+        Bundle loaderArgs = new Bundle();
+        //loaderArgs.putString(LOADER_EXTRA, NetworkUtils.buildMoviesListUrl().toString());
+        loaderArgs.putString(LOADER_EXTRA, MyApp.moviesListSortBy.getAccessType().toString());
 
         /*
          * Ensures a loader is initialized and active. If the loader doesn't already exist, one is
@@ -188,12 +205,12 @@ public class MainActivity extends AppCompatActivity implements
          * the last created loader is re-used.
          */
         LoaderManager loaderManager = getSupportLoaderManager();
-        Loader<List<MoviesListItem>> theMovieDbLoader = loaderManager.getLoader(Constant.MOVIES_LOADER_ID);
+        Loader<List<MoviesListItem>> theMovieDbLoader = loaderManager.getLoader(Const.MOVIES_LOADER_ID);
 
         if (theMovieDbLoader == null) {
-            loaderManager.initLoader(Constant.MOVIES_LOADER_ID, webUrlBundle, this);
+            loaderManager.initLoader(Const.MOVIES_LOADER_ID, loaderArgs, this);
         } else {
-            loaderManager.restartLoader(Constant.MOVIES_LOADER_ID, webUrlBundle, this);
+            loaderManager.restartLoader(Const.MOVIES_LOADER_ID, loaderArgs, this);
         }
 
     } // fetchMoviesList
@@ -248,25 +265,53 @@ public class MainActivity extends AppCompatActivity implements
             public List<MoviesListItem> loadInBackground() {
 
                 // Get the WEB URL that is passed on loader initialization */
-                String loaderWebUrlString = loaderArgs.getString(LOADER_WEB_URL_EXTRA);
-                if (loaderWebUrlString == null || TextUtils.isEmpty(loaderWebUrlString)) {
+                String accessType = loaderArgs.getString(LOADER_EXTRA);
+                if (accessType == null || TextUtils.isEmpty(accessType)) {
                     /* If null or empty string is passed, return immediately */
                     return null;
                 }
 
-                /* try to fetch the data from the network */
-                try {
-                    URL theMovieDbUrl = new URL(loaderWebUrlString);
+                if (accessType == Enum.sortByAccessType.BY_THE_MOVIE_DB.toString()) {
+                    String loaderWebUrlString = NetworkUtils.buildMoviesListUrl().toString();
+                    /** try to fetch the data from the network */
+                    try {
+                        URL theMovieDbUrl = new URL(loaderWebUrlString);
 
-                    /* if succeed returns a List of MoviesReviewsListItem objects */
-                    return JsonUtils.parseMoviesListJson(
-                            NetworkUtils.getResponseFromHttpUrl(theMovieDbUrl));
+                    /** if succeed returns a List of MoviesReviewsListItem objects */
+                        return JsonUtils.parseMoviesListJson(
+                                NetworkUtils.getResponseFromHttpUrl(theMovieDbUrl));
 
-                } catch (Exception e) {
-                    /* If fails returns null to significate the error */
-                    e.printStackTrace();
-                    return null;
+                    } catch (Exception e) {
+                    /** If fails returns null to significate the error */
+                        e.printStackTrace();
+                        return null;
+                    }
+                } else if (accessType == Enum.sortByAccessType.BY_LOCAL_DB.toString()) {
+                    Uri uri = PopularMoviesContract.FavoriteMoviesEntry.CONTENT_URI;
+                    uri = uri.buildUpon().build();
+                    Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+
+                    if (cursor == null) {
+                        return null;
+                    } else {
+                        /** ArrayList to hold the movies list items */
+                        List<MoviesListItem> moviesListItems = new ArrayList<MoviesListItem>();
+                        MoviesListItem moviesListItem;
+
+                        while (cursor.moveToNext()) {
+                            moviesListItem = new MoviesListItem();
+                            moviesListItem.setId(cursor.getInt(1));
+                            moviesListItem.setPosterPath(cursor.getString(3));
+
+                            moviesListItems.add(moviesListItem);
+                        }
+
+                        cursor.close();
+                        return moviesListItems;
+                    }
                 }
+
+                return null;
             } // loadInBackground
 
             /**
