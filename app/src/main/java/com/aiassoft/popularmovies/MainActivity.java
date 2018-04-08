@@ -1,23 +1,25 @@
 /*
- * Copyright (C) 2018 by George Vrynios
- * This project was made under the supervision of Udacity
- * in the Android Developer Nanodegree Program
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  * Copyright (C) 2018 by George Vrynios
+ *  * This project was made under the supervision of Udacity
+ *  * in the Android Developer Nanodegree Program
+ *  *
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  * http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License.
+ *  *
+ *  * Solution for How to retain RecyclerView's position after Orientation change, while using Firebase & ChildEventListener?
+ *  * by Drew Szurko at
+ *  * https://stackoverflow.com/questions/42514011/how-to-retain-recyclerviews-position-after-orientation-change-while-using-fire
  *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * Solution for How to retain RecyclerView's position after Orientation change, while using Firebase & ChildEventListener?
- * by Drew Szurko at
- * https://stackoverflow.com/questions/42514011/how-to-retain-recyclerviews-position-after-orientation-change-while-using-fire
  */
 
 package com.aiassoft.popularmovies;
@@ -50,6 +52,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.aiassoft.popularmovies.MyApp.moviesListSortBy;
 
 public class MainActivity extends AppCompatActivity implements
@@ -58,7 +63,9 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final String LOG_TAG = MyApp.APP_TAG + MainActivity.class.getSimpleName();
 
-    /*
+
+
+    /**
      * Used to identify the WEB URL that is being used in the loader.loadInBackground
      * to get the movies' data from themoviedb.org
      */
@@ -67,38 +74,30 @@ public class MainActivity extends AppCompatActivity implements
     /* The Movies List Adapter */
     private MoviesListAdapter mMoviesListAdapter;
 
-    /* The views in the xml file */
-    private RecyclerView mRecyclerView;
+    /** The views in the xml file */
+    /** The recycler view */
+    @BindView(R.id.rv_movies) RecyclerView mRecyclerView;
 
-    private LinearLayout mErrorMessageBlock;
-    private TextView mErrorMessageText;
+    /** The Error Message Block,
+     * is used to display errors and will be hidden if there are no error
+     */
+    @BindView(R.id.ll_error_message) LinearLayout mErrorMessageBlock;
 
-    private ProgressBar mLoadingIndicator;
+    /** The view holding the error message */
+    @BindView(R.id.tv_error_message_text) TextView mErrorMessageText;
+
+    /**
+     * The ProgressBar that will indicate to the user that we are loading data.
+     * It will be hidden when no data is loading.
+     */
+    @BindView(R.id.pb_loading_indicator) ProgressBar mLoadingIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
-        /*
-         * Getting the views' references from our xml
-         */
-        /* The recycler view */
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
-
-        /*
-         * The ProgressBar that will indicate to the user that we are loading data.
-         * It will be hidden when no data is loading.
-         */
-        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
-
-        /* The Error Message Block,
-         * is used to display errors and will be hidden if there are no error
-         */
-        mErrorMessageBlock = (LinearLayout) findViewById(R.id.ll_error_message);
-
-        /* The view holding the error message */
-        mErrorMessageText = (TextView) findViewById(R.id.tv_error_message_text);
 
         /*
          * The gridLayoutManager is responsible for measuring and positioning item views within a

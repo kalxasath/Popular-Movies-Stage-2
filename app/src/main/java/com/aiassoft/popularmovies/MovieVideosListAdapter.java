@@ -33,6 +33,9 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * {@link MoviesListAdapter} exposes a list of movie videoss to a
  * {@link android.support.v7.widget.RecyclerView}
@@ -74,11 +77,11 @@ public class MovieVideosListAdapter extends RecyclerView.Adapter<MovieVideosList
             implements View.OnClickListener {
 
         /* This ImageView is used to display the Movie's Poster */
-        private final TextView mVideoTitle;
+        @BindView(R.id.tv_video_title) TextView mVideoTitle;
 
         public MovieVideosAdapterViewHolder(View view) {
             super(view);
-            mVideoTitle = view.findViewById(R.id.tv_video_title);
+            ButterKnife.bind(this, view);
             view.setOnClickListener(this);
         }
 
