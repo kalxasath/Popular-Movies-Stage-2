@@ -51,20 +51,28 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Created by gvryn on 04/03/18.
  * Displays the details of a movie
  */
 public class DetailActivity extends AppCompatActivity
         implements MovieVideosListAdapter.MovieVideosAdapterOnClickHandler {
-        //LoaderCallbacks<List<MovieVideosListItem>>
+    //LoaderCallbacks<List<MovieVideosListItem>>
 
     private static final String LOG_TAG = MyApp.APP_TAG + DetailActivity.class.getSimpleName();
 
-    /** Identifies the incoming parameter of the movie id */
+    /**
+     * Identifies the incoming parameter of the movie id
+     */
     public static final String EXTRA_MOVIE_ID = "movie_id";
 
-    /** If there is not a movie id, this id will as the default one */
+    /**
+     * If there is not a movie id, this id will as the default one
+     */
     private static final int DEFAULT_MOVIE_ID = -1;
 
     private static Context mContext = null;
@@ -73,35 +81,66 @@ public class DetailActivity extends AppCompatActivity
     private static ArrayList<MovieVideosListItem> mMovieVideosListItems;
     private static ArrayList<MovieReviewsListItem> mMovieReviewsListItems;
 
-    /** The Videos & Reviews Adapters */
+    /**
+     * The Videos & Reviews Adapters
+     */
     private MovieVideosListAdapter mMovieVideosListAdapter;
     private MovieReviewsListAdapter mMovieReviewsListAdapter;
 
-    /** The views in the xml file */
-    private ScrollView mMovieDetails;
-    private ImageView mMoviePoster;
-    private TextView mOriginalTitle;
-    private TextView mOverview;
-    private TextView mReleaseDate;
-    private TextView mVoteAverage;
-    private TextView mRuntime;
-    private Button mFavoriteButton;
+    /**
+     * The views in the xml file
+     */
+    @BindView(R.id.sv_movie_details)
+    ScrollView mMovieDetails;
+    @BindView(R.id.iv_movie_poster)
+    ImageView mMoviePoster;
+    @BindView(R.id.tv_original_title)
+    TextView mOriginalTitle;
+    @BindView(R.id.tv_overview)
+    TextView mOverview;
+    @BindView(R.id.tv_release_date)
+    TextView mReleaseDate;
+    @BindView(R.id.tv_vote_average)
+    TextView mVoteAverage;
+    @BindView(R.id.tv_runtime)
+    TextView mRuntime;
+    @BindView(R.id.btn_favorite)
+    Button mFavoriteButton;
 
-    private TextView mVideosTitle;
-    private RecyclerView mRecyclerViewVideos;
+    @BindView(R.id.tv_trailers_title)
+    TextView mVideosTitle;
+    @BindView(R.id.rv_videos)
+    RecyclerView mRecyclerViewVideos;
 
-    private TextView mReviewsTitle;
-    private RecyclerView mRecyclerViewReviews;
+    @BindView(R.id.tv_reviews_title)
+    TextView mReviewsTitle;
+    @BindView(R.id.rv_reviews)
+    RecyclerView mRecyclerViewReviews;
 
+    /**
+     * The Error Message Block,
+     * is used to display errors and will be hidden if there are no error
+     */
+    @BindView(R.id.ll_error_message)
+    LinearLayout mErrorMessageBlock;
 
-    private LinearLayout mErrorMessageBlock;
-    private TextView mErrorMessageText;
+    /**
+     * The view holding the error message
+     */
+    @BindView(R.id.tv_error_message_text)
+    TextView mErrorMessageText;
 
-    private ProgressBar mLoadingIndicator;
+    /**
+     * The ProgressBar that will indicate to the user that we are loading data.
+     * It will be hidden when no data is loading.
+     */
+    @BindView(R.id.pb_loading_indicator)
+    ProgressBar mLoadingIndicator;
 
 
     /**
      * Creates the detail activity
+     *
      * @param savedInstanceState The saved state of the activity
      */
     @Override
@@ -110,6 +149,7 @@ public class DetailActivity extends AppCompatActivity
         mContext = this;
 
         setContentView(R.layout.activity_detail);
+        ButterKnife.bind(this);
 
         /** should be called from another activity. if not, show error toast and return */
         Intent intent = getIntent();
@@ -124,37 +164,6 @@ public class DetailActivity extends AppCompatActivity
             closeOnError();
         }
 
-        /**
-         * The ProgressBar that will indicate to the user that we are loading data.
-         * It will be hidden when no data is loading.
-         */
-        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
-
-        /** The Error Message Block,
-         *  is used to display errors and will be hidden if there are no error
-         */
-        mErrorMessageBlock = (LinearLayout) findViewById(R.id.ll_error_message);
-
-        /** The view holding the error message */
-        mErrorMessageText = (TextView) findViewById(R.id.tv_error_message_text);
-
-        /**
-         * The movie's details views
-         */
-        mMovieDetails = (ScrollView) findViewById(R.id.sv_movie_details);
-        mMoviePoster = (ImageView) findViewById(R.id.iv_movie_poster);
-        mOriginalTitle = (TextView) findViewById(R.id.tv_original_title);
-        mOverview = (TextView) findViewById(R.id.tv_overview);
-        mReleaseDate = (TextView) findViewById(R.id.tv_release_date);
-        mVoteAverage = (TextView) findViewById(R.id.tv_vote_average);
-        mRuntime = (TextView) findViewById(R.id.tv_runtime);
-        mFavoriteButton = (Button) findViewById(R.id.btn_favorite);
-
-        mVideosTitle = (TextView) findViewById(R.id.tv_trailers_title);
-        mRecyclerViewVideos = (RecyclerView) findViewById(R.id.rv_videos);
-
-        mReviewsTitle = (TextView) findViewById(R.id.tv_reviews_title);
-        mRecyclerViewReviews = (RecyclerView) findViewById(R.id.rv_reviews);
 
         /**
          *  Initialize Videos Section
@@ -193,7 +202,7 @@ public class DetailActivity extends AppCompatActivity
         mRecyclerViewReviews.setAdapter(mMovieReviewsListAdapter);
 
         /** We will check if we are connected to the internet */
-        if (! NetworkUtils.isOnline()) {
+        if (!NetworkUtils.isOnline()) {
             /** We are not connected, show the Error Block
              *  with the propriety error message
              */
@@ -265,6 +274,10 @@ public class DetailActivity extends AppCompatActivity
         }
     }
 
+    @OnClick(R.id.btn_favorite)
+    public void onViewClicked() {
+    }
+
     public class TheMovieDbQueryTask extends AsyncTask<URL, Void, ArrayList<String>> {
         @Override
         protected void onPreExecute() {
@@ -319,7 +332,7 @@ public class DetailActivity extends AppCompatActivity
                 if (mContext != null) {
                     mMovie = JsonUtils.parseMoviesJson(s.get(0));
                     mMovie.setId(mMovieId);
-                    if (s.get(3)=="1") {
+                    if (s.get(3) == "1") {
                         mMovie.setIsFavorite(true);
                     } else {
                         mMovie.setIsFavorite(false);
@@ -357,6 +370,7 @@ public class DetailActivity extends AppCompatActivity
      * This method will make the error message block visible,
      * populate the error message with the corresponding error message,
      * and hides the movie details.
+     *
      * @param errorId The error message string id
      */
     private void showErrorMessage(int errorId) {
@@ -456,7 +470,7 @@ public class DetailActivity extends AppCompatActivity
         String stringId = "" + mMovie.getId();
         Uri uri = FavoriteMoviesEntry.CONTENT_URI;
         uri = uri.buildUpon().appendPath(stringId).build();
-        int deletedRecords = getContentResolver().delete(uri,null, null);
+        int deletedRecords = getContentResolver().delete(uri, null, null);
 
         if (deletedRecords > 0) {
             mFavoriteButton.setText(R.string.add_to_favorites);

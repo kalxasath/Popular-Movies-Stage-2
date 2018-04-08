@@ -30,6 +30,9 @@ import com.aiassoft.popularmovies.model.MovieReviewsListItem;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * {@link MoviesListAdapter} exposes a list of movie reviews to a
  * {@link android.support.v7.widget.RecyclerView}
@@ -54,13 +57,12 @@ public class MovieReviewsListAdapter extends RecyclerView.Adapter<MovieReviewsLi
     public class MoviesReviewsAdapterViewHolder extends RecyclerView.ViewHolder {
 
         /* The reviews views */
-        private final TextView mReviewAuthor;
-        private final TextView mReviewContent;
+        @BindView(R.id.tv_review_author) TextView mReviewAuthor;
+        @BindView(R.id.tv_review_content) TextView mReviewContent;
 
         public MoviesReviewsAdapterViewHolder(View view) {
             super(view);
-            mReviewAuthor = (TextView) view.findViewById(R.id.tv_review_author);
-            mReviewContent = (TextView) view.findViewById(R.id.tv_review_content);
+            ButterKnife.bind(this, view);
         }
 
     }
